@@ -30,8 +30,19 @@ public class ItemController {
         updatedItem.setItemName(item.getItemName());
         updatedItem.setOwner(item.getOwner());
         updatedItem.setExpirationDate(item.getExpirationDate());
+        updatedItem.setShared(item.isShared());
+        updatedItem.setNotes(item.getNotes());
 
         itemRepo.save(updatedItem);
         return "Updated..";
 }
+
+@DeleteMapping(value = "/delete/{id}")
+    public String deleteItem(@PathVariable long id){
+        Item deletedItem = itemRepo.findById(id).get();
+        itemRepo.delete(deletedItem);
+
+        return "delete..";
+}
+
 }

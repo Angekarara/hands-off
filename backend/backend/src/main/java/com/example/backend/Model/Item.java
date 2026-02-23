@@ -12,12 +12,18 @@ public class Item {
     private long id;
 @Column
     private String category;
-@Column
+@Column(nullable = false)
     private String itemName;
-@Column
+@Column(nullable = false)
     private String owner;
 @Column
     private LocalDate expirationDate;
+
+@Column(nullable = false)
+    private boolean shared = false;
+
+@Column(length = 1000)
+    private String notes;
 
     public long getId() {
         return id;
@@ -57,5 +63,21 @@ public class Item {
 
     public void setExpirationDate(LocalDate expirationDate){
         this.expirationDate = expirationDate;
+    }
+
+    public boolean isShared() {
+        return shared;
+    }
+
+    public void setShared(boolean shared) {
+        this.shared = shared;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
