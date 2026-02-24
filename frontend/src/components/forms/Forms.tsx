@@ -2,8 +2,13 @@ import { useForm } from "react-hook-form";
 import { categories } from "../../category";
 import Input from "../shared/Input";
 import type { Category, FormValues } from "../../type";
+import axios from "axios";
 
-const Forms: React.FC = () => {
+type FormsProps = {
+  onSuccess?: () => void;
+};
+
+const Forms = ({ onSuccess }: FormsProps) => {
   const {
     register,
     handleSubmit,
@@ -12,17 +17,30 @@ const Forms: React.FC = () => {
   } = useForm<FormValues>({
     defaultValues: {
       itemName: "",
-      Owner: "",
+      owner: "",
       category: "All",
       expirationDate: "",
-      isShared: false,
+      shared: false,
       notes: "",
     },
     mode: "onChange",
   });
 
-  const onSubmit = (data: FormValues) => {
-    console.log("Form Data:", data);
+  const onSubmit = async (data: FormValues) => {
+    try {
+      await axios.post("http://localhost:8080/save", data);
+      reset();
+      alert("Item added successfully!");
+      if (onSuccess) {
+        onSuccess();
+      }
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        alert(error.response?.data?.message || "Failed to submit form");
+      } else {
+        alert("An unknown error occurred");
+      }
+    }
   };
 
   const handleCancel = () => {
@@ -52,8 +70,8 @@ const Forms: React.FC = () => {
           type="text"
           required
           placeholder="Your Name"
-          error={errors.Owner?.message}
-          {...register("Owner", {
+          error={errors.owner?.message}
+          {...register("owner", {
             required: "Owner name is required",
             minLength: {
               value: 2,
@@ -91,11 +109,11 @@ const Forms: React.FC = () => {
       <div className="flex items-center space-x-3 py-2">
         <input
           type="checkbox"
-          id="isShared"
+          id="shared"
           className="h-5 w-5 rounded border-gray-300 text-green-950"
-          {...register("isShared")}
+          {...register("shared")}
         />
-        <label htmlFor="isShared" className="text-sm font-medium text-gray-700">
+        <label htmlFor="shared" className="text-sm font-medium text-gray-700">
           Open to sharing? (Shared items are free for all!)
         </label>
       </div>
@@ -124,7 +142,7 @@ const Forms: React.FC = () => {
           type="submit"
           className="px-6 py-2 text-sm font-medium text-[#fdf5ea] bg-green-950 rounded-lg hover:bg-green-900"
         >
-          Submit
+          Add to Fridge
         </button>
       </div>
     </form>

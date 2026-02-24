@@ -11,7 +11,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category>("All");
-  const { items, isloading } = useItems();
+  const { items, isloading, refetch } = useItems();
 
   const normalizedSearch = searchItem.trim().toLowerCase();
   const filteredItems = items.filter((item) => {
@@ -38,7 +38,10 @@ function App() {
         onClose={() => setIsModalOpen(false)}
         title="Add New Item"
       >
-        <Forms />
+        <Forms onSuccess={() => {
+          refetch();
+          setIsModalOpen(false);
+        }} />
       </Modal>
       {isloading ? (
         <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">

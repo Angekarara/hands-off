@@ -20,7 +20,7 @@ const useItems = () => {
     } finally {
       setIsItemsLoading(false);
     }
-  }, [itemsLoading]);
+  }, []);
   useEffect(() => {
     fetchItems();
   }, [fetchItems]);

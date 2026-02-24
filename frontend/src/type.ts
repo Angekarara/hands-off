@@ -13,14 +13,14 @@ export type Item = {
   owner: string;
   category: Exclude<Category, "All">;
   expirationDate: string;
-  isShared: boolean;
+  shared: boolean;
 };
 export type FormValues = {
   itemName: string;
-  Owner: string;
+  owner: string;
   category: Category;
   expirationDate: string;
-  isShared: boolean;
+  shared: boolean;
   notes: string;
 };
 
