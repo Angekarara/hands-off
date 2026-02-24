@@ -16,7 +16,7 @@ function App() {
   const normalizedSearch = searchItem.trim().toLowerCase();
   const filteredItems = items.filter((item) => {
     const matchesSearch = normalizedSearch
-      ? item.name.toLowerCase().includes(normalizedSearch)
+      ? item.itemName.toLowerCase().includes(normalizedSearch)
       : true;
     const matchesCategory =
       selectedCategory === "All" || item.category === selectedCategory;
@@ -38,17 +38,19 @@ function App() {
         onClose={() => setIsModalOpen(false)}
         title="Add New Item"
       >
-        <Forms onSuccess={() => {
-          refetch();
-          setIsModalOpen(false);
-        }} />
+        <Forms
+          onSuccess={() => {
+            refetch();
+            setIsModalOpen(false);
+          }}
+        />
       </Modal>
       {isloading ? (
         <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">
           Loading items...
         </div>
       ) : (
-        <ItemsCard items={filteredItems} />
+        <ItemsCard items={filteredItems} onDelete={refetch} />
       )}
     </div>
   );

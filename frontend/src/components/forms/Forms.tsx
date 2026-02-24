@@ -30,7 +30,6 @@ const Forms = ({ onSuccess }: FormsProps) => {
     try {
       await axios.post("http://localhost:8080/save", data);
       reset();
-      alert("Item added successfully!");
       if (onSuccess) {
         onSuccess();
       }

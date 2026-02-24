@@ -9,7 +9,7 @@ export type Category =
 
 export type Item = {
   id: string;
-  name: string;
+  itemName: string;
   owner: string;
   category: Exclude<Category, "All">;
   expirationDate: string;

@@ -1,11 +1,28 @@
 import { PersonStanding, Timer } from "lucide-react";
+import axios from "axios";
 import type { Item } from "../../type";
 
 type ItemsCardProps = {
   items: Item[];
+  onDelete?: () => void;
 };
 
-const ItemsCard = ({ items }: ItemsCardProps) => {
+const handleDelete = async (id: string, onDelete?: () => void) => {
+  try {
+    await axios.delete(`http://localhost:8080/delete/${id}`);
+    if (onDelete) {
+      onDelete();
+    }
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      alert(error.response?.data?.message || "Failed to delete item");
+    } else {
+      alert("An unknown error occurred");
+    }
+  }
+};
+
+const ItemsCard = ({ items, onDelete }: ItemsCardProps) => {
   if (items.length === 0) {
     return (
       <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">
@@ -26,11 +43,11 @@ const ItemsCard = ({ items }: ItemsCardProps) => {
               {item.category}
             </span>
             <span className="rounded-full px-6 bg-[#fdf5ea] text-green-950 border border-green-950">
-              {item.isShared ? "Shared" : "Private"}
+              {item.shared ? "Shared" : "Private"}
             </span>
           </div>
           <div>
-            <h2 className="text-2xl font-bold">{item.name}</h2>
+            <h2 className="text-2xl font-bold">{item.itemName}</h2>
           </div>
           <div className="flex gap-2">
             <PersonStanding />
@@ -49,6 +66,7 @@ const ItemsCard = ({ items }: ItemsCardProps) => {
             </button>
             <button
               type="button"
+              onClick={() => handleDelete(item.id, onDelete)}
               className="text-[#fdf5ea] bg-red-950 py-1 px-12 rounded-md"
             >
               Delete
