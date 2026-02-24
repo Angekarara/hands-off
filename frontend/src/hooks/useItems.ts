@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Item } from "../type";
+import axios from "axios";
 
 const useItems = () => {
   const [items, setItems] = useState<Item[]>([]);
@@ -8,22 +9,18 @@ const useItems = () => {
     if (itemsLoading) return;
     setIsItemsLoading(true);
     try {
-      const response = await fetch("http://localhost:8080/items");
-      if (!response.ok) {
-        throw new Error("failed to fetch items");
-      }
-      const data = await response.json();
-      setItems(data);
+      const response = await axios.get<Item[]>("http://localhost:8080/items");
+      setItems(response.data);
     } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
+      if (axios.isAxiosError(error)) {
+        throw new Error(error.response?.data?.message || "Failed to fetch items");
       } else {
         throw new Error("An unknown error occurred");
       }
     } finally {
       setIsItemsLoading(false);
     }
-  }, []);
+  }, [itemsLoading]);
   useEffect(() => {
     fetchItems();
   }, [fetchItems]);
