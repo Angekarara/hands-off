@@ -5,12 +5,13 @@ import { Navbar } from "./components/navigations/Navbar";
 import Modal from "./components/shared/Modal";
 import ItemsCard from "./components/cards/ItemsCard";
 import type { Category } from "./type";
-import { items } from "./items";
+import useItems from "./hooks/useItems";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+  const { items, isloading } = useItems();
 
   const normalizedSearch = searchItem.trim().toLowerCase();
   const filteredItems = items.filter((item) => {
@@ -39,7 +40,13 @@ function App() {
       >
         <Forms />
       </Modal>
-      <ItemsCard items={filteredItems} />
+      {isloading ? (
+        <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">
+          Loading items...
+        </div>
+      ) : (
+        <ItemsCard items={filteredItems} />
+      )}
     </div>
   );
 }
