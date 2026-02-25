@@ -14,6 +14,7 @@ export type Item = {
   category: Exclude<Category, "All">;
   expirationDate: string;
   shared: boolean;
+  notes: string;
 };
 export type FormValues = {
   itemName: string;

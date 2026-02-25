@@ -1,16 +1,18 @@
 import { useState } from "react";
-import Forms from "./components/forms/Forms";
+import Form from "./components/forms/Form";
 import ItemsFilter from "./components/ItemsFilter";
 import { Navbar } from "./components/navigations/Navbar";
 import Modal from "./components/shared/Modal";
 import ItemsCard from "./components/cards/ItemsCard";
-import type { Category } from "./type";
+import type { Category, Item } from "./type";
 import useItems from "./hooks/useItems";
 
 function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchItem, setSearchItem] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category>("All");
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
   const { items, isloading, refetch } = useItems();
 
   const normalizedSearch = searchItem.trim().toLowerCase();
@@ -24,6 +26,18 @@ function App() {
     return matchesSearch && matchesCategory;
   });
 
+  const handleEdit = (item: Item) => {
+    setEditingItem(item);
+    setIsEditing(true);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setIsEditing(false);
+    setEditingItem(null);
+  };
+
   return (
     <div className="min-h-screen bg-[#fdf5ea]">
       <Navbar setIsModalOpen={setIsModalOpen} />
@@ -35,14 +49,16 @@ function App() {
       />
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Add New Item"
+        onClose={handleCloseModal}
+        title={isEditing ? "Edit Item" : "Add New Item"}
       >
-        <Forms
+        <Form
           onSuccess={() => {
             refetch();
             setIsModalOpen(false);
           }}
+          editItem={editingItem || undefined}
+          isEditing={isEditing}
         />
       </Modal>
       {isloading ? (
@@ -50,7 +66,7 @@ function App() {
           Loading items...
         </div>
       ) : (
-        <ItemsCard items={filteredItems} onDelete={refetch} />
+        <ItemsCard items={filteredItems} onDelete={refetch} onEdit={handleEdit} />
       )}
     </div>
   );
