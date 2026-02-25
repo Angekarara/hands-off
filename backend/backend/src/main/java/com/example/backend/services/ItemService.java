@@ -27,7 +27,7 @@ public class ItemService {
         updatedItem.setItemName(item.getItemName());
         updatedItem.setOwner(item.getOwner());
         updatedItem.setExpirationDate(item.getExpirationDate());
-        updatedItem.setShared(item.isShared());
+        updatedItem.setShared(item.getShared());
         updatedItem.setNotes(item.getNotes());
 
         itemRepo.save(updatedItem);
