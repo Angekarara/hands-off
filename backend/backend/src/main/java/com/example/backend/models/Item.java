@@ -1,38 +1,47 @@
 package com.example.backend.models;
 
-@lombok.Getter
-@lombok.Setter@jakarta.persistence.Entity
-@jakarta.persistence.Table(name = "items")
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.LocalDate;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "items")
 public class Item {
-@jakarta.persistence.Id
-@jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-@jakarta.persistence.Column(name = "id", nullable = false)
-private java.lang.Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Long id;
 
-@jakarta.validation.constraints.Size(max = 255)
-@jakarta.persistence.Column(name = "category")
-private java.lang.String category;
+    @Size(max = 255)
+    @Column(name = "category")
+    private String category;
 
-@jakarta.persistence.Column(name = "expiration_date")
-private java.time.LocalDate expirationDate;
+    @Column(name = "expiration_date")
+    private LocalDate expirationDate;
 
-@jakarta.validation.constraints.Size(max = 255)
-@jakarta.persistence.Column(name = "owner")
-private java.lang.String owner;
+    @Size(max = 255)
+    @Column(name = "owner")
+    private String owner;
 
-@jakarta.validation.constraints.Size(max = 255)
-@jakarta.persistence.Column(name = "item_name")
-private java.lang.String itemName;
+    @Size(max = 255)
+    @Column(name = "item_name")
+    private String itemName;
 
-@jakarta.validation.constraints.Size(max = 1000)
-@jakarta.persistence.Column(name = "notes", length = 1000)
-private java.lang.String notes;
+    @Size(max = 1000)
+    @Column(name = "notes", length = 1000)
+    private String notes;
 
-@jakarta.validation.constraints.NotNull
-@org.hibernate.annotations.ColumnDefault("false")
-@jakarta.persistence.Column(name = "shared", nullable = false)
-private java.lang.Boolean shared;
-
+    @NotNull
+    @ColumnDefault("false")
+    @Column(name = "shared", nullable = false)
+    private Boolean shared;
 
 
 }
