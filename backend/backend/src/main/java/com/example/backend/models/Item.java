@@ -1,83 +1,38 @@
 package com.example.backend.models;
 
-import jakarta.persistence.*;
-
-import java.time.LocalDate;
-
-@Entity
-@Table(name = "items")
+@lombok.Getter
+@lombok.Setter@jakarta.persistence.Entity
+@jakarta.persistence.Table(name = "items")
 public class Item {
-@Id
-@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-@Column
-    private String category;
-@Column(nullable = false)
-    private String itemName;
-@Column(nullable = false)
-    private String owner;
-@Column
-    private LocalDate expirationDate;
+@jakarta.persistence.Id
+@jakarta.persistence.GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+@jakarta.persistence.Column(name = "id", nullable = false)
+private java.lang.Long id;
 
-@Column(nullable = false)
-    private boolean shared = false;
+@jakarta.validation.constraints.Size(max = 255)
+@jakarta.persistence.Column(name = "category")
+private java.lang.String category;
 
-@Column(length = 1000)
-    private String notes;
+@jakarta.persistence.Column(name = "expiration_date")
+private java.time.LocalDate expirationDate;
 
-    public long getId() {
-        return id;
-    }
+@jakarta.validation.constraints.Size(max = 255)
+@jakarta.persistence.Column(name = "owner")
+private java.lang.String owner;
 
-    public void setId(long id) {
-        this.id = id;
-    }
+@jakarta.validation.constraints.Size(max = 255)
+@jakarta.persistence.Column(name = "item_name")
+private java.lang.String itemName;
 
-    public String getCategory() {
-        return category;
-    }
+@jakarta.validation.constraints.Size(max = 1000)
+@jakarta.persistence.Column(name = "notes", length = 1000)
+private java.lang.String notes;
 
-    public void setCategory(String category){
-        this.category = category;
-    }
+@jakarta.validation.constraints.NotNull
+@org.hibernate.annotations.ColumnDefault("false")
+@jakarta.persistence.Column(name = "shared", nullable = false)
+private java.lang.Boolean shared;
 
-    public String getItemName() {
-        return itemName;
-    }
 
-    public void setItemName(String itemName) {
-        this.itemName = itemName;
-    }
 
-    public String getOwner(){
-        return owner;
-    }
-
-    public void setOwner(String owner){
-        this.owner = owner;
-    }
-
-    public LocalDate getExpirationDate(){
-        return expirationDate;
-    }
-
-    public void setExpirationDate(LocalDate expirationDate){
-        this.expirationDate = expirationDate;
-    }
-
-    public boolean isShared() {
-        return shared;
-    }
-
-    public void setShared(boolean shared) {
-        this.shared = shared;
-    }
-
-    public String getNotes() {
-        return notes;
-    }
-
-    public void setNotes(String notes) {
-        this.notes = notes;
-    }
 }
