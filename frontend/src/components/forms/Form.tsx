@@ -3,6 +3,7 @@ import { categories } from "../../category";
 import Input from "../shared/Input";
 import type { Category, FormValues, Item } from "../../type";
 import axios from "axios";
+import { apiUrl } from "../../constants/apiUrl";
 
 type FormsProps = {
   onSuccess?: () => void;
@@ -40,9 +41,9 @@ const Forms = ({ onSuccess, editItem, isEditing }: FormsProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       if (isEditing && editItem) {
-        await axios.put(`http://localhost:8080/update/${editItem.id}`, data);
+        await axios.put(`${apiUrl}/update/${editItem.id}`, data);
       } else {
-        await axios.post("http://localhost:8080/save", data);
+        await axios.post(`${apiUrl}/save`, data);
       }
       reset();
       if (onSuccess) {

@@ -1,26 +1,10 @@
 import { PersonStanding, Timer } from "lucide-react";
-import axios from "axios";
 import type { Item } from "../../type";
 
 type ItemsCardProps = {
   items: Item[];
-  onDelete?: () => void;
+  onDelete: (id: string) => void;
   onEdit?: (item: Item) => void;
-};
-
-const handleDelete = async (id: string, onDelete?: () => void) => {
-  try {
-    await axios.delete(`http://localhost:8080/delete/${id}`);
-    if (onDelete) {
-      onDelete();
-    }
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      alert(error.response?.data?.message || "Failed to delete item");
-    } else {
-      alert("An unknown error occurred");
-    }
-  }
 };
 
 const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
@@ -33,7 +17,7 @@ const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
   }
 
   return (
-    <div className="bg-[#fdf5ea] grid grid-cols-4 gap-6 mt-10 px-10">
+    <div className="grid grid-cols-4 gap-6 mt-10 px-10">
       {items.map((item) => (
         <div
           key={item.id}
@@ -68,7 +52,7 @@ const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
             </button>
             <button
               type="button"
-              onClick={() => handleDelete(item.id, onDelete)}
+              onClick={() => onDelete(item.id)}
               className="text-[#fdf5ea] bg-red-950 py-1 px-12 rounded-md"
             >
               Delete
