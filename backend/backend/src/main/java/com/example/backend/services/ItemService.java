@@ -1,17 +1,18 @@
 package com.example.backend.services;
 
 import com.example.backend.models.Item;
-import com.example.backend.repositories.ItemRepo;
+import com.example.backend.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ItemService {
 
     @Autowired
-    private ItemRepo itemRepo;
+    private ItemRepository itemRepo;
 
     public List<Item> getAllItems(){
         return itemRepo.findAll();
@@ -21,16 +22,21 @@ public class ItemService {
          itemRepo.save(item);
     }
 
-    public void updateItem(long id, Item item){
-        Item updatedItem = itemRepo.findById(id).get();
-        updatedItem.setCategory(item.getCategory());
-        updatedItem.setItemName(item.getItemName());
-        updatedItem.setOwner(item.getOwner());
-        updatedItem.setExpirationDate(item.getExpirationDate());
-        updatedItem.setShared(item.getShared());
-        updatedItem.setNotes(item.getNotes());
+    public Optional<Item> getItemById(long id){
+        return itemRepo.findById(id);
+    }
 
-        itemRepo.save(updatedItem);
+    public void updateItem(long id, Item item){
+            Item updatedItem = itemRepo.findById(id).get();
+            updatedItem.setCategory(item.getCategory());
+            updatedItem.setItemName(item.getItemName());
+            updatedItem.setOwner(item.getOwner());
+            updatedItem.setExpirationDate(item.getExpirationDate());
+            updatedItem.setShared(item.getShared());
+            updatedItem.setNotes(item.getNotes());
+
+            itemRepo.save(updatedItem);
+
     }
 
     public void deleteItem(long id){
