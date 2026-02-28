@@ -8,10 +8,9 @@ import { apiUrl } from "../../constants/apiUrl";
 type FormsProps = {
   onSuccess?: () => void;
   editItem?: Item;
-  isEditing?: boolean;
 };
 
-const Forms = ({ onSuccess, editItem, isEditing }: FormsProps) => {
+const Forms = ({ onSuccess, editItem }: FormsProps) => {
   const {
     register,
     handleSubmit,
@@ -40,7 +39,7 @@ const Forms = ({ onSuccess, editItem, isEditing }: FormsProps) => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      if (isEditing && editItem) {
+      if (editItem) {
         await axios.put(`${apiUrl}/update/${editItem.id}`, data);
       } else {
         await axios.post(`${apiUrl}/save`, data);
@@ -157,7 +156,7 @@ const Forms = ({ onSuccess, editItem, isEditing }: FormsProps) => {
           type="submit"
           className="px-6 py-2 text-sm font-medium text-[#fdf5ea] bg-green-950 rounded-lg hover:bg-green-900"
         >
-          {isEditing ? "Update Item" : "Add to Fridge"}
+          {editItem ? "Update Item" : "Add to Fridge"}
         </button>
       </div>
     </form>

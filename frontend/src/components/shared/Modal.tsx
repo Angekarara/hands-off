@@ -20,7 +20,7 @@ export default function Modal({
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div
-          className="fixed inset-0 bg-black bg-opacity-70"
+          className="fixed inset-0 bg-black/45"
           onClick={onClose}
         ></div>
         <div className="relative bg-[#fdf5ea] rounded-lg shadow-xl max-w-lg w-full">

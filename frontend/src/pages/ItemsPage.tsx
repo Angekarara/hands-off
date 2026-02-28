@@ -69,19 +69,24 @@ const ItemsPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={editingItem ? "Edit Item" : "Item Details"}
+        title={
+          editingItem
+            ? "Edit Item"
+            : viewingItem
+              ? "Item Details"
+              : "Add New Item"
+        }
       >
-        {editingItem ? (
+        {editingItem || !viewingItem ? (
           <Form
             onSuccess={() => {
               refetch();
               handleCloseModal();
             }}
-            editItem={editingItem}
-            isEditing={true}
+            editItem={editingItem || undefined}
           />
         ) : (
-          viewingItem && <ItemDetails item={viewingItem} />
+          <ItemDetails item={viewingItem} />
         )}
       </Modal>
       {isloading ? (
