@@ -5,9 +5,10 @@ type ItemsCardProps = {
   items: Item[];
   onDelete: (id: string) => void;
   onEdit?: (item: Item) => void;
+  onView?: (item: Item) => void;
 };
 
-const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
+const ItemsCard = ({ items, onDelete, onEdit, onView }: ItemsCardProps) => {
   if (items.length === 0) {
     return (
       <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">
@@ -21,7 +22,8 @@ const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
       {items.map((item) => (
         <div
           key={item.id}
-          className="flex flex-col gap-4 border border-gray-300 rounded-lg p-6"
+          className="flex flex-col gap-4 border border-gray-300 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
+          onClick={() => onView && onView(item)}
         >
           <div className="flex justify-between">
             <span className="rounded-full px-6 bg-green-950 text-[#fdf5ea]">
@@ -42,18 +44,24 @@ const ItemsCard = ({ items, onDelete, onEdit }: ItemsCardProps) => {
             <Timer />
             Exp: <span className="font-bold">{item.expirationDate}</span>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-2">
             <button
               type="button"
-              className="text-[#fdf5ea] bg-green-950 py-1 px-12 rounded-md"
-              onClick={() => onEdit && onEdit(item)}
+              className="text-[#fdf5ea] bg-green-950 py-1 px-6 rounded-md flex-1"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onEdit) onEdit(item);
+              }}
             >
               Edit
             </button>
             <button
               type="button"
-              onClick={() => onDelete(item.id)}
-              className="text-[#fdf5ea] bg-red-950 py-1 px-12 rounded-md"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(item.id);
+              }}
+              className="text-[#fdf5ea] bg-red-950 py-1 px-6 rounded-md flex-1"
             >
               Delete
             </button>

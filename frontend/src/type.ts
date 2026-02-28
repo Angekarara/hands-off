@@ -31,3 +31,7 @@ export type ItemsFilterProps = {
   selectedCategory: Category;
   onSelectCategory: (category: Category) => void;
 };
+
+export interface ItemDetailsProps {
+  item: Item;
+}

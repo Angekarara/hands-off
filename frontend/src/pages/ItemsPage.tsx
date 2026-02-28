@@ -3,6 +3,7 @@ import Form from "../components/forms/Form";
 import ItemsFilter from "../components/ItemsFilter";
 import Modal from "../components/shared/Modal";
 import ItemsCard from "../components/cards/ItemsCard";
+import ItemDetails from "../components/ItemDetails";
 import type { Category, Item } from "../type";
 import useItems from "../hooks/useItems";
 import axios from "axios";
@@ -13,7 +14,7 @@ const ItemsPage = () => {
   const [searchItem, setSearchItem] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<Category>("All");
   const [editingItem, setEditingItem] = useState<Item | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [viewingItem, setViewingItem] = useState<Item | null>(null);
   const { items, isloading, refetch } = useItems();
 
   const normalizedSearch = searchItem.trim().toLowerCase();
@@ -42,15 +43,20 @@ const ItemsPage = () => {
 
   const handleEdit = (item: Item) => {
     setEditingItem(item);
-    setIsEditing(true);
     setIsModalOpen(true);
   };
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setIsEditing(false);
     setEditingItem(null);
+    setViewingItem(null);
   };
+
+  const handleViewDetails = (item: Item) => {
+    setViewingItem(item);
+    setIsModalOpen(true);
+  };
+
 
   return (
     <div className="flex flex-col gap-8">
@@ -63,16 +69,20 @@ const ItemsPage = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
-        title={isEditing ? "Edit Item" : "Add New Item"}
+        title={editingItem ? "Edit Item" : "Item Details"}
       >
-        <Form
-          onSuccess={() => {
-            refetch();
-            handleCloseModal();
-          }}
-          editItem={editingItem || undefined}
-          isEditing={isEditing}
-        />
+        {editingItem ? (
+          <Form
+            onSuccess={() => {
+              refetch();
+              handleCloseModal();
+            }}
+            editItem={editingItem}
+            isEditing={true}
+          />
+        ) : (
+          viewingItem && <ItemDetails item={viewingItem} />
+        )}
       </Modal>
       {isloading ? (
         <div className="text-center text-gray-500">Loading items...</div>
@@ -92,6 +102,7 @@ const ItemsPage = () => {
               });
             }}
             onEdit={handleEdit}
+            onView={handleViewDetails}
           />
         </>
       )}
