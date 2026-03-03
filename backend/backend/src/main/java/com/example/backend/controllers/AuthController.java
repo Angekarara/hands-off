@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Map;
 
@@ -29,7 +28,7 @@ public class AuthController {
 
 
     @PostMapping
-    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request, UriComponentsBuilder uriBuilder){
+    public ResponseEntity<?> register(@Valid @RequestBody RegisterRequest request){
         if(userRepository.existsByEmail(request.getEmail())){
             return ResponseEntity.badRequest().body(Map.of("email", "Email is already registered"));
         }
@@ -41,9 +40,8 @@ public class AuthController {
         userRepository.save(user);
 
         var userDto = userMapper.toDto(user);
-        var uri = uriBuilder.path("/users/{id}").buildAndExpand(userDto.getId()).toUri();
 
-        return ResponseEntity.created(uri).body(userDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(userDto);
     }
 
 
