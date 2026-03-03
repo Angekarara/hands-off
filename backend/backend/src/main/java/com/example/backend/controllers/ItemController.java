@@ -10,11 +10,11 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:5173/")
 @RestController
 public class ItemController {
 
@@ -33,28 +33,36 @@ public class ItemController {
         return ResponseEntity.ok(itemDtos);
     }
     @PostMapping(value = "/save")
-    public ResponseEntity<Void> saveItem(@Valid @RequestBody ItemDto itemDto){
+    public ResponseEntity<Void> saveItem(@Valid @RequestBody ItemDto itemDto, Principal principal){
         Item item = itemMapper.toEntity(itemDto);
+        item.setOwner(principal.getName());
         itemService.saveItem(item);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping(value = "/update/{id}")
-    public ResponseEntity<Void> updateItem(@PathVariable long id,@Valid @RequestBody ItemDto itemDto){
+    public ResponseEntity<Void> updateItem(@PathVariable long id, @Valid @RequestBody ItemDto itemDto, Principal principal){
         var existingItem = itemService.getItemById(id);
         if (existingItem.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+        if (!principal.getName().equals(existingItem.get().getOwner())) {
+            return ResponseEntity.status(403).build();
+        }
         Item item = itemMapper.toEntity(itemDto);
+        item.setOwner(existingItem.get().getOwner());
         itemService.updateItem(id, item);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping(value = "/delete/{id}")
-    public ResponseEntity<Void> deleteItem(@PathVariable long id){
+    public ResponseEntity<Void> deleteItem(@PathVariable long id, Principal principal){
         var existingItem = itemService.getItemById(id);
         if (existingItem.isEmpty()) {
             return ResponseEntity.notFound().build();
+        }
+        if (!principal.getName().equals(existingItem.get().getOwner())) {
+            return ResponseEntity.status(403).build();
         }
         itemService.deleteItem(id);
         return ResponseEntity.noContent().build();

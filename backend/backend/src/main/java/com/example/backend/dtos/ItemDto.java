@@ -17,7 +17,6 @@ public class ItemDto {
     @Size(max = 100, message = "Item name must be at most 100 characters")
     private String itemName;
 
-    @NotBlank(message = "Owner must not be blank")
     @Size(max = 50, message = "Owner name must be at most 50 characters")
     private String owner;
 
