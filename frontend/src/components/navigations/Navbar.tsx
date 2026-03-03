@@ -1,7 +1,16 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { isAuthenticated } from "../../auth/auth";
+import { clearToken } from "../../auth/token";
 
 export const Navbar = () => {
   const baseLinkClass = "px-3 py-1 rounded-md text-sm font-medium";
+  const authenticated = isAuthenticated();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    clearToken();
+    navigate("/login");
+  };
 
   return (
     <nav className="bg-green-950 flex justify-between px-10 rounded-b-md py-5 text-[#fdf5ea] mx-10">
@@ -13,27 +22,45 @@ export const Navbar = () => {
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `${baseLinkClass} ${isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"}`
+            `${baseLinkClass} ${
+              isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"
+            }`
           }
         >
           Items
         </NavLink>
-        <NavLink
-          to="/login"
-          className={({ isActive }) =>
-            `${baseLinkClass} ${isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"}`
-          }
-        >
-          Login
-        </NavLink>
-        <NavLink
-          to="/register"
-          className={({ isActive }) =>
-            `${baseLinkClass} ${isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"}`
-          }
-        >
-          Register
-        </NavLink>
+        {authenticated ? (
+          <button
+            type="button"
+            onClick={handleLogout}
+            className={`${baseLinkClass} bg-[#fdf5ea] text-green-950`}
+          >
+            Logout
+          </button>
+        ) : (
+          <>
+            <NavLink
+              to="/login"
+              className={({ isActive }) =>
+                `${baseLinkClass} ${
+                  isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"
+                }`
+              }
+            >
+              Login
+            </NavLink>
+            <NavLink
+              to="/register"
+              className={({ isActive }) =>
+                `${baseLinkClass} ${
+                  isActive ? "bg-[#fdf5ea] text-green-950" : "text-[#fdf5ea]"
+                }`
+              }
+            >
+              Register
+            </NavLink>
+          </>
+        )}
       </div>
     </nav>
   );

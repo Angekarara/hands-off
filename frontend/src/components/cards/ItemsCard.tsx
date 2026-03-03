@@ -3,12 +3,21 @@ import type { Item } from "../../type";
 
 type ItemsCardProps = {
   items: Item[];
-  onDelete: (id: string) => void;
+  onDelete?: (id: string) => void;
   onEdit?: (item: Item) => void;
   onView?: (item: Item) => void;
+  isAuthenticated?: boolean;
+  currentUserEmail?: string | null;
 };
 
-const ItemsCard = ({ items, onDelete, onEdit, onView }: ItemsCardProps) => {
+const ItemsCard = ({
+  items,
+  onDelete,
+  onEdit,
+  onView,
+  isAuthenticated,
+  currentUserEmail,
+}: ItemsCardProps) => {
   if (items.length === 0) {
     return (
       <div className="mx-10 mt-10 rounded-lg border border-gray-300 p-6 text-center text-green-950">
@@ -20,6 +29,13 @@ const ItemsCard = ({ items, onDelete, onEdit, onView }: ItemsCardProps) => {
   return (
     <div className="grid grid-cols-4 gap-6 mt-10 px-10">
       {items.map((item) => (
+        (() => {
+          const canManage =
+            !!isAuthenticated &&
+            !!currentUserEmail &&
+            item.owner === currentUserEmail;
+
+          return (
         <div
           key={item.id}
           className="flex flex-col gap-4 border border-gray-300 rounded-lg p-6 cursor-pointer hover:shadow-lg transition-shadow"
@@ -36,37 +52,41 @@ const ItemsCard = ({ items, onDelete, onEdit, onView }: ItemsCardProps) => {
           <div>
             <h2 className="text-2xl font-bold">{item.itemName}</h2>
           </div>
-          <div className="flex gap-2">
-            <PersonStanding />
+          <div className="flex items-center gap-2">
+            <PersonStanding className="h-5 w-5 shrink-0" />
             owner: <span className="font-bold">{item.owner}</span>
           </div>
-          <div className="flex gap-2">
-            <Timer />
+          <div className="flex items-center gap-2">
+            <Timer className="h-5 w-5 shrink-0" />
             Exp: <span className="font-bold">{item.expirationDate}</span>
           </div>
-          <div className="flex justify-between gap-2">
-            <button
-              type="button"
-              className="text-[#fdf5ea] bg-green-950 py-1 px-6 rounded-md flex-1"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onEdit) onEdit(item);
-              }}
-            >
-              Edit
-            </button>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete(item.id);
-              }}
-              className="text-[#fdf5ea] bg-red-950 py-1 px-6 rounded-md flex-1"
-            >
-              Delete
-            </button>
-          </div>
+          {canManage && (
+            <div className="flex justify-between gap-2">
+              <button
+                type="button"
+                className="text-[#fdf5ea] bg-green-950 py-1 px-6 rounded-md flex-1"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onEdit) onEdit(item);
+                }}
+              >
+                Edit
+              </button>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onDelete) onDelete(item.id);
+                }}
+                className="text-[#fdf5ea] bg-red-950 py-1 px-6 rounded-md flex-1"
+              >
+                Delete
+              </button>
+            </div>
+          )}
         </div>
+          );
+        })()
       ))}
     </div>
   );

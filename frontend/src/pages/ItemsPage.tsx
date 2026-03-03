@@ -6,8 +6,8 @@ import ItemsCard from "../components/cards/ItemsCard";
 import ItemDetails from "../components/ItemDetails";
 import type { Category, Item } from "../type";
 import useItems from "../hooks/useItems";
-import axios from "axios";
-import { apiUrl } from "../constants/apiUrl";
+import { apiClient } from "../api/client";
+import { isAuthenticated, getUserEmail } from "../auth/auth";
 
 const ItemsPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -16,6 +16,8 @@ const ItemsPage = () => {
   const [editingItem, setEditingItem] = useState<Item | null>(null);
   const [viewingItem, setViewingItem] = useState<Item | null>(null);
   const { items, isloading, refetch } = useItems();
+  const authenticated = isAuthenticated();
+  const userEmail = getUserEmail();
 
   const normalizedSearch = searchItem.trim().toLowerCase();
   const filteredItems = items.filter((item) => {
@@ -30,14 +32,10 @@ const ItemsPage = () => {
 
   const handleDelete = async (id: string, onDelete: () => void) => {
     try {
-      await axios.delete(`${apiUrl}/delete/${id}`);
+      await apiClient.delete(`/delete/${id}`);
       onDelete();
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Failed to delete item");
-      } else {
-        alert("An unknown error occurred");
-      }
+    } catch {
+      alert("Failed to delete item. Please make sure you are logged in.");
     }
   };
 
@@ -56,7 +54,6 @@ const ItemsPage = () => {
     setViewingItem(item);
     setIsModalOpen(true);
   };
-
 
   return (
     <div className="flex flex-col gap-8">
@@ -93,12 +90,14 @@ const ItemsPage = () => {
         <div className="text-center text-gray-500">Loading items...</div>
       ) : (
         <>
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="mx-10 w-fit bg-green-950 text-[#fdf5ea] px-6 py-2 rounded-md"
-          >
-            Add New Item
-          </button>
+          {authenticated && (
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="mx-10 w-fit bg-green-950 text-[#fdf5ea] px-6 py-2 rounded-md"
+            >
+              Add New Item
+            </button>
+          )}
           <ItemsCard
             items={filteredItems}
             onDelete={(id) => {
@@ -108,6 +107,8 @@ const ItemsPage = () => {
             }}
             onEdit={handleEdit}
             onView={handleViewDetails}
+            isAuthenticated={authenticated}
+            currentUserEmail={userEmail}
           />
         </>
       )}

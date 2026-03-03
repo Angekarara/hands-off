@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { categories } from "../../category";
 import Input from "../shared/Input";
 import type { Category, FormValues, Item } from "../../type";
-import axios from "axios";
-import { apiUrl } from "../../constants/apiUrl";
+import { apiClient } from "../../api/client";
 
 type FormsProps = {
   onSuccess?: () => void;
@@ -20,7 +19,6 @@ const Forms = ({ onSuccess, editItem }: FormsProps) => {
     defaultValues: editItem
       ? {
           itemName: editItem.itemName,
-          owner: editItem.owner,
           category: editItem.category,
           expirationDate: editItem.expirationDate,
           shared: editItem.shared,
@@ -28,7 +26,6 @@ const Forms = ({ onSuccess, editItem }: FormsProps) => {
         }
       : {
           itemName: "",
-          owner: "",
           category: "All",
           expirationDate: "",
           shared: false,
@@ -40,20 +37,16 @@ const Forms = ({ onSuccess, editItem }: FormsProps) => {
   const onSubmit = async (data: FormValues) => {
     try {
       if (editItem) {
-        await axios.put(`${apiUrl}/update/${editItem.id}`, data);
+        await apiClient.put(`/update/${editItem.id}`, data);
       } else {
-        await axios.post(`${apiUrl}/save`, data);
+        await apiClient.post("/save", data);
       }
       reset();
       if (onSuccess) {
         onSuccess();
       }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        alert(error.response?.data?.message || "Failed to submit form");
-      } else {
-        alert("An unknown error occurred");
-      }
+    } catch {
+      alert("Failed to submit form. Please make sure you are logged in.");
     }
   };
 
@@ -78,36 +71,20 @@ const Forms = ({ onSuccess, editItem }: FormsProps) => {
         })}
       />
 
-      <div className="grid grid-cols-2 gap-4">
-        <Input
-          label="Owner (You)"
-          type="text"
-          required
-          placeholder="Your Name"
-          error={errors.owner?.message}
-          {...register("owner", {
-            required: "Owner name is required",
-            minLength: {
-              value: 2,
-              message: "Owner name must be at least 2 characters",
-            },
-          })}
-        />
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Category
-          </label>
-          <select
-            className="border border-gray-300 w-full rounded-lg hover:border-green-950 py-2 px-3 bg-white"
-            {...register("category")}
-          >
-            {categories.map((c: Category) => (
-              <option key={c} value={c}>
-                {c}
-              </option>
-            ))}
-          </select>
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Category
+        </label>
+        <select
+          className="border border-gray-300 w-full rounded-lg hover:border-green-950 py-2 px-3 bg-white"
+          {...register("category")}
+        >
+          {categories.map((c: Category) => (
+            <option key={c} value={c}>
+              {c}
+            </option>
+          ))}
+        </select>
       </div>
 
       <Input
