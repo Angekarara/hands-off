@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "items")
 public class Item {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -26,9 +27,9 @@ public class Item {
     @Column(name = "expiration_date")
     private LocalDate expirationDate;
 
-    @Size(max = 255)
-    @Column(name = "owner")
-    private String owner;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner", referencedColumnName = "email")
+    private User ownerUser;
 
     @Size(max = 255)
     @Column(name = "item_name")
@@ -43,5 +44,11 @@ public class Item {
     @Column(name = "shared", nullable = false)
     private Boolean shared;
 
+    public String getOwner() {
+        return ownerUser != null ? ownerUser.getEmail() : null;
+    }
 
+    public void setOwner(User user) {
+        this.ownerUser = user;
+    }
 }

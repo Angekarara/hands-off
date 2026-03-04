@@ -2,6 +2,7 @@ package com.example.backend.mappers;
 
 import com.example.backend.dtos.ItemDto;
 import com.example.backend.models.Item;
+import com.example.backend.models.User;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,11 +22,11 @@ public class ItemMapper {
         itemDto.setNotes(item.getNotes());
         return itemDto;
     }
-    
-    public Item toEntity(ItemDto itemDto) {
+
+    public Item toEntity(ItemDto itemDto, User ownerUser) {
         Item item = new Item();
         item.setItemName(itemDto.getItemName());
-        item.setOwner(itemDto.getOwner());
+        item.setOwner(ownerUser);
         item.setCategory(itemDto.getCategory());
         item.setExpirationDate(itemDto.getExpirationDate());
         item.setShared(itemDto.getShared());
