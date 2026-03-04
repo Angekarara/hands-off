@@ -18,7 +18,6 @@ export type Item = {
 };
 export type FormValues = {
   itemName: string;
-  owner: string;
   category: Category;
   expirationDate: string;
   shared: boolean;
